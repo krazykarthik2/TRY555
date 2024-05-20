@@ -1,0 +1,14 @@
+@font-face {
+    font-family: Integral;
+    src: url("./assets/fonts/IntegralCF-Bold.otf");
+}
+@font-face {
+    font-family: Montaga;
+    src: url("./assets/fonts/Montaga-Regular.ttf");
+}
+h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6,.font-I{
+    font-family: Integral;
+}
+p,.p,.font-M{
+    font-family: Montaga;
+}

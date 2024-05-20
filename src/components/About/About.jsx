@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import SmallFooter from "./../Home/SmallFooter";
 function About() {
   return (
-    <div className="h-100 d-flex flex-column justify-content-between about-container text-center">
+    <div className="h-100 text-start  d-flex flex-column justify-content-between about-container px-21">
       <h1>
         At try555, we specialize in crafting custom projects tailored to your
         unique requirements.
       </h1>
-      <p className="lead mt-3">
+      <p className="lead mt-3 ">
         Whether your project involves electronics, art, or a combination of
         both, our skilled team brings your vision to life with precision and
         creativity. We transform your ideas into impressive final year projects
@@ -18,20 +18,20 @@ function About() {
         excellence, no matter the discipline.
       </p>
 
-      <Link className="d-flex text-color text-decoration-none" to={"/about/team"}>
+      <Link
+        className="font-I d-flex text-color text-decoration-none"
+        to={"/about/team"}
+      >
         <h2>Men behind try555</h2>
         <FaAngleRight size={"2em"} />
       </Link>
-      <div>
-        <Button
-          variant="secondary"
-          className="mt-3 d-inline "
-          as={Link}
-          to="/about/more"
-        >
-          Learn More <FaAngleRight />
-        </Button>
-      </div>
+      <Link
+        className="font-I d-flex text-color text-decoration-none"
+        to={"/about/more"}
+      >
+        <h2>Learn More</h2>
+        <FaAngleRight size={"2em"} />
+      </Link>
 
       <SmallFooter />
     </div>

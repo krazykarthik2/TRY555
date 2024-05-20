@@ -1,0 +1,7 @@
+.small-footer a{
+    text-decoration: none !important;
+    display: flex;
+    span{
+        text-decoration:underline !important;
+    }
+}

@@ -1,38 +1,36 @@
 /* components/Gallery.css */
 .gallery-container {
-    margin-top: 50px;
-    padding: 0 15px;
-  }
-  
-  .gallery-card-container {
-    margin: 15px;
-  }
-  
-  .gallery-card {
-    width: 100%;
-    max-width: 300px;
-    border: none;
-    transition:all .5s ease-out;
-  }
-  .gallery-card .card-img-top{
-    transition:all .3s ease-in;
-  }
-  .gallery-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  .gallery-card .card-img-top:hover {
+  margin-top: 50px;
+  padding: 0 15px;
+}
+
+.gallery-card-container {
+  margin: 15px;
+}
+
+.gallery-card {
+  width: 100%;
+  max-width: 300px;
+  border: none;
+  transition: all 0.5s ease-out;
+}
+.gallery-card .card-img-top {
+  transition: all 0.3s ease-in;
+}
+.gallery-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  .card-img-top {
     transform: scale(1.1);
-    margin-bottom:10px;
+    margin-bottom: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-  
-  
-  .gallery-container h1 {
-    margin-bottom: 20px;
-  }
-  
-  .gallery-container p.lead {
-    margin-bottom: 40px;
-  }
-  
+}
+
+.gallery-container h1 {
+  margin-bottom: 20px;
+}
+
+.gallery-container p.lead {
+  margin-bottom: 40px;
+}

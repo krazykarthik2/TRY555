@@ -1,6 +1,7 @@
 import "./App.css";
-import "./bs.css"; 
+import "./bs.css";
 import "./theme.scss";
+import "./fonts.css"
 import { Suspense, lazy } from "react";
 import Loading from "./components/utils/Loading";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";

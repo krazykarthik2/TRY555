@@ -15,7 +15,7 @@ const links = [
 ];
 function NavTop() {
   return (
-    <Navbar bg="dark" expand="lg">
+    <Navbar bg="dark" expand="lg" className="font-I">
       <Container>
         <Navbar.Brand as={Link} to="/">
           <img src={brandName} />

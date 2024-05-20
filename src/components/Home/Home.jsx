@@ -17,15 +17,15 @@ function Home() {
             academic goals, ensuring you stand out and succeed. Let us take the
             stress out of your final year and help you achieve excellence.
           </p>
-          <div className="discover">
+          <div className="discover font-I">
             <Button variant="secondary" className="mt-3" as={Link} to="/about">
               Discover us <FaAngleRight size={"12px"} />
             </Button>
           </div>
         </div>
-        <div colSpan={2}>
-          <Button variant="primary" className="mt-3" as={Link} to="/contact">
-            GET IN TOUCH <FaAngleRight size={"12px"} />
+        <div >
+          <Button variant="primary" className="mt-3 font-I hstack" as={Link} to="/contact">
+          <span>Get in Touch</span><FaAngleRight size={"2em"} />
           </Button>
         </div>
       </div>
