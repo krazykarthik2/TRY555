@@ -16,6 +16,7 @@ const Products = lazy(() => import("./components/Products"));
 const Gallery = lazy(() => import("./components/Gallery"));
 function App() {
   return (
+    
     <Suspense fallback={<Loading />}>
       <Router>
         <div className="vh-100 vw-100 d-flex flex-column">

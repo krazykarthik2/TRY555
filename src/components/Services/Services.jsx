@@ -6,7 +6,7 @@ import "./Services.css"; // Import custom CSS for additional styling
 function Services() {
   return (
     <div className="d-flex flex-column align-items-center text-center services-container">
-      <div className="my-5">
+      <div className="">
         <h1>Our Services</h1>
         <p className="lead mt-3">
           At try555, we offer a wide range of services to bring your projects to life. Our team of experts is dedicated to delivering excellence in every project, ensuring you achieve your academic and professional goals.

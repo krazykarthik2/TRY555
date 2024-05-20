@@ -1,0 +1,17 @@
+/* Ensure the container allows wrapping but controls the space */
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+
+  gap: 0.25rem 0.4rem; /* Adjust the gap between tags */
+  overflow: hidden;
+  max-width: 315px;
+}
+.person {
+  *{
+    transition: all 0.3 ease;
+  }
+}
+.desc {
+  max-width: 600px;
+}
