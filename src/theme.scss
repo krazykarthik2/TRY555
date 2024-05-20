@@ -1,0 +1,17 @@
+// src/custom.scss
+
+// Import Bootstrap functions
+@import "~bootstrap/scss/functions";
+
+
+$primary:#456a4d;
+$secondary:#2d18b7;
+$success:#24ff54;
+$info:#340404;
+$warning:#cad62b;
+$danger:#ec1313;
+$light:#ffffff;
+$dark:#000000;
+
+// Import Bootstrap
+@import "~bootstrap/scss/bootstrap";

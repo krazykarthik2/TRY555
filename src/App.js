@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import "./bs.css"; 
+import "./theme.scss";
+import { Suspense, lazy } from "react";
+import Loading from "./components/utils/Loading";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import NavTop from "./components/NavTop";
+const Home = lazy(() => import("./components/Home"));
+const About = lazy(() => import("./components/About"));
+const AboutMore = lazy(() => import("./components/AboutMore"));
+const Team = lazy(() => import("./components/Team"));
+const Contact = lazy(() => import("./components/Contact"));
+const Services = lazy(() => import("./components/Services"));
+const Products = lazy(() => import("./components/Products"));
+const Gallery = lazy(() => import("./components/Gallery"));
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Suspense fallback={<Loading />}>
+      <Router>
+        <div className="vh-100 vw-100 d-flex flex-column">
+          <NavTop />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about">
+              <Route path="" element={<About />} />
+              <Route path="more" element={<AboutMore />} />
+              <Route path="team" element={<Team />} />
+            </Route>
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/gallery" element={<Gallery />} />
+          </Routes>
+        </div>
+      </Router>
+    </Suspense>
   );
 }
 

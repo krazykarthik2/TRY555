@@ -1,0 +1,38 @@
+/* components/Services.css */
+.services-container {
+    margin-top: 50px;
+    padding: 0 15px;
+  }
+  
+  .service-card-container {
+    margin: 15px;
+
+  }
+  
+  .service-card {
+    width: 100%;
+    max-width: 300px;
+    border:5px solid gray;
+    border-radius: 10px;
+    transition: transform 0.3s;
+
+  }
+  
+  .service-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .service-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  .services-container h1 {
+    margin-bottom: 20px;
+  }
+  
+  .services-container p.lead {
+    margin-bottom: 40px;
+  }
+  
