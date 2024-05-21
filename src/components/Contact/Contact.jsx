@@ -11,6 +11,8 @@ import { PiPaperPlaneRightFill } from "react-icons/pi";
 import SmallFooter from "../Home/SmallFooter/SmallFooter";
 import "./Contact.css";
 import { Link } from "react-router-dom";
+import { logEvent } from "firebase/analytics";
+import {analytics} from "./../../firebase/firebase"
 const org = {
   insta: "https://instagram.com/realtry555",
   whatsapp: "https://wa.me/+919502520447/?text=hi",
@@ -35,6 +37,9 @@ function Contact() {
     e.preventDefault();
     // Implement your form submission logic here
     console.log(formData);
+    logEvent(analytics,"contact_via_form", {
+      time:Date.now()
+    });
 
     axios
       .post(webHookURL, {

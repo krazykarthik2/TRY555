@@ -2,10 +2,17 @@ import React from "react";
 import { FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./SmallFooter.css";
+import { logEvent } from "firebase/analytics";
+import { analytics } from "../../../firebase/firebase";
 
 export default function SmallFooter() {
+  function logIt(){
+    logEvent(analytics,"contact_via_details", {
+      time:Date.now()
+    });
+  }
   return (
-    <div className="small-footer font-M text-white hstack contact-info justify-content-evenly  py-3">
+    <div className="small-footer font-M text-white hstack contact-info justify-content-evenly  py-3" onClick={()=>logIt() }>
       <Link to="mailto:goparajukarthik2@gmail.com?" className="d-center gap-2 text-white">
         <FaEnvelope />
         <span>goparajukarthik2@gmail.com</span>

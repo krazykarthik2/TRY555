@@ -5,7 +5,8 @@ const ImageDownloader = ({ text, imageUrl, fileName,className }) => {
     fetch(imageUrl, {
       method: "GET",
       headers: {
-        "Content-Type": "image/jpeg",
+        "Content-Type": "image",
+        "mode":'no-cors' ,
       },
     })
       .then((response) => {
