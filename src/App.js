@@ -7,6 +7,7 @@ import Loading from "./components/utils/Loading";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import NavTop from "./components/NavTop";
 import { app, analytics } from "./firebase/firebase";
+import ProductSingle from "./components/Products/ProductSingle/ProductSingle";
 console.log(app, analytics);
 const Home = lazy(() => import("./components/Home"));
 const About = lazy(() => import("./components/About"));
@@ -35,7 +36,11 @@ function App() {
             </Route>
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/products" element={<Products />} />
+            <Route path="/products" >
+
+            <Route path="" element={<Products />} />
+            <Route path=":id" element={<ProductSingle/>} />
+            </Route>
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/admin">
               <Route path="" element={<Admin />} />

@@ -134,7 +134,7 @@ function Contact() {
                 <PiPaperPlaneRightFill size={"1.2em"} />
               </div>
             </Button>
-            {no_res_sent && <div>We'll contact you shortly</div>}
+            {no_res_sent ==0|| <div>We'll contact you shortly</div>}
             {no_res_sent > 0 && (
               <div className="hstack gap-2">
                 <FaCheckCircle size={"2em"} />
