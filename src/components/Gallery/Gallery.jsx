@@ -64,7 +64,7 @@ function Gallery() {
           <Card.Img variant="top rounded-5" src={image.src} alt={image.title} />
           <div className="hstack justify-content-between px-4">
             <Card.Title className="text-start">{image.title}</Card.Title>
-            <div>
+            {/* <div>
               <ImageDownloader
                 className="border-0 bg-transparent h6"
                 text={<FaDownload />}
@@ -74,7 +74,7 @@ function Gallery() {
               <button className="border-0 bg-transparent h6" onClick={() => shareFile()}>
                 <FaShareNodes />
               </button>
-            </div>
+            </div> */}
           </div>
         </Card>
       </div>
