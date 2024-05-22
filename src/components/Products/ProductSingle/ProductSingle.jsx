@@ -41,9 +41,10 @@ function ProductSingle() {
 
     axios
       .post(webHookURL, {
+        productId:params["id"],
         name: formData.name,
         email: formData.email,
-        message: formData.message,
+        phone:formData.phone,
         time: new Date().valueOf(),
       })
       .then(() => {
