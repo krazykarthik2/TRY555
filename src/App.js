@@ -8,6 +8,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import NavTop from "./components/NavTop";
 import { app, analytics } from "./firebase/firebase";
 import ProductSingle from "./components/Products/ProductSingle/ProductSingle";
+import EditProductImages from "./components/UploadProducts/EditProductImages/EditProductImages";
 console.log(app, analytics);
 const Home = lazy(() => import("./components/Home"));
 const About = lazy(() => import("./components/About"));
@@ -36,10 +37,9 @@ function App() {
             </Route>
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/products" >
-
-            <Route path="" element={<Products />} />
-            <Route path=":id" element={<ProductSingle/>} />
+            <Route path="/products">
+              <Route path="" element={<Products />} />
+              <Route path=":id" element={<ProductSingle />} />
             </Route>
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/admin">
@@ -47,6 +47,17 @@ function App() {
               <Route path="upload">
                 <Route path="gallery" element={<UploadGallery />} />
                 <Route path="products" element={<UploadProducts />} />
+              </Route>
+              <Route path="manage">
+                <Route path="gallery">
+                  <Route path=":id" element={<UploadGallery />} />
+                </Route>
+                <Route path="products">
+                  <Route path=":id" >
+                    <Route path="" element={<UploadProducts />} />
+                    <Route path="images" element={<EditProductImages/>} />
+                  </Route>
+                </Route>
               </Route>
             </Route>
           </Routes>

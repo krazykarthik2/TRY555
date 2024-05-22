@@ -1,0 +1,9 @@
+.img-cont:hover {
+  .btn-op {
+    opacity: 1 !important;
+  }
+}
+.btn-op {
+  opacity: 0;
+  transition: all .3s ease;
+}
