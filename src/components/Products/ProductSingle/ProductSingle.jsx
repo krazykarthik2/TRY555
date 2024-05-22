@@ -9,7 +9,7 @@ import { Button, Form, FormControl, FormGroup } from "react-bootstrap";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
 import { FaCheckCircle } from "react-icons/fa";
 import "./ProductSingle.css";
-const webHookURL = "";
+const webHookURL = "https://webhooks.integrately.com/a/webhooks/027b68c97d1e45a68dd6d1ddd5effdba";
 function ProductSingle() {
   const params = useParams();
   const [product, setProduct] = useState(null);
