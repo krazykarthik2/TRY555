@@ -10,7 +10,7 @@ import {
   FaWrench,
 } from "react-icons/fa";
 import aboutBack from "./../../assets/about-back.png";
-import aboutBack_hz from "./../../assets/about-back-hz.png"
+import aboutBack_hz from "./../../assets/about-back-hz.png";
 import { SiGmail } from "react-icons/si";
 import karthik from "./../../assets/team/karthik.png";
 import sairam from "./../../assets/team/sairam.png";
@@ -52,7 +52,7 @@ const members = [
 function SimplifyPerson({ person, openStory }) {
   return (
     <Card
-      className="person rounded-5 p-2 bg-transparent border-0"
+      className="person mx-auto mb-2 rounded-5 p-2 bg-transparent border-0"
       onClick={() => openStory()}
     >
       <div className="hstack">
@@ -89,12 +89,40 @@ function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
   return isOtherOpen() && !isOpen ? (
     <SimplifyPerson {...{ openStory, person }} />
   ) : (
-    <Card className="person rounded-5 p-2">
+    <Card
+      className={
+        "person mx-auto mb-2 rounded-5 p-0 border-0 " +
+        (isOpen ? "expanded" : "collapsed")
+      }
+    >
+      <div className="bg"></div>
+      <div className="bghover"></div>
       <div className="hstack flex-wrap">
         <div className="vstack flex-wrap">
-          <div className="d-flex">
-            <div className="socials  position-absolute end-0  translate-middle">
-              <div className="vstack pt-5 me-1 gap-2 ">
+          <div className="d-center p-2">
+            <Card.Img
+              variant="top rounded-5  bg-dark w-auto"
+              src={person.image.src}
+              width={"235px"}
+              height={"235px"}
+              className="d-sm-none"
+            />
+            <Card.Img
+              variant="top rounded-5  bg-dark w-auto"
+              src={person.image.src}
+              width={"300px"}
+              height={"300px"}
+              className="d-none d-sm-flex d-md-none"
+            />
+            <Card.Img
+              variant="top rounded-5  bg-dark w-auto"
+              src={person.image.src}
+              width={"350px"}
+              height={"350px"}
+              className="d-none d-md-block"
+            />
+            <div className="socials position-absolute end-0  translate-middle">
+              <div className="vstack  me-1 gap-2 ">
                 <div className="mb-4"></div>
                 <Link to={person.insta} className="insta text-white">
                   <FaInstagram size={"2em"} />
@@ -104,27 +132,17 @@ function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
                 </Link>
               </div>
             </div>
-            <Card.Img
-              variant="top rounded-5  bg-dark w-auto"
-              src={person.image.src}
-              width={"300px"}
-              height={"300px"}
-              className="d-md-none"
-            />
-            <Card.Img
-              variant="top rounded-5  bg-dark w-auto"
-              src={person.image.src}
-              width={"350px"}
-              height={"350px"}
-              className="d-none d-md-block"
-            />
           </div>
           <Card.Body className="py-2">
             <div className="vstack ">
-              <Card.Title className="text-start h4">{person.name}</Card.Title>
+              <Card.Title className="text-start expand h4 hovercenter">
+                {person.name}
+              </Card.Title>
               <div className="hstack justify-content-between">
-                <div className="alt text-muted">@{person.alt}</div>
-                <div className="position text-muted">~{person.position}</div>
+                <div className="alt text-muted expand">@{person.alt}</div>
+                <div className="position text-muted expand">
+                  ~{person.position}
+                </div>
               </div>
               <div className="vstack p gap-2">
                 <div className="hstack gap-2 ">
@@ -133,7 +151,11 @@ function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
                     to={"mailto:" + person.phone}
                     className="text-white hstack gap-2 text-decoration-none"
                   >
-                    <SiGmail size="1.2em" />
+                      <SiGmail
+                        size="1.2em"
+                        className="icon  colorized "
+                        style={{ "--color": "#F92723" }}
+                      />
                     <span className="text-decoration-underline">
                       {person.email}
                     </span>
@@ -145,7 +167,11 @@ function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
                     to={"tel:" + person.phone}
                     className="text-white hstack gap-2 text-decoration-none"
                   >
-                    <FaPhoneAlt size="1.2em" />
+                      <FaPhoneAlt
+                        size="1.2em"
+                        className="icon colorized "
+                        style={{ "--color": "#177FF7" }}
+                      />
                     <span className="text-decoration-underline">
                       {person.phone}
                     </span>
@@ -154,19 +180,23 @@ function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
                     target="_new"
                     to={"https://wa.me/" + person.phone + "/?text=Hi"}
                   >
-                    <FaWhatsapp size={"2em"} />
+                      <FaWhatsapp
+                        size={"2em"}
+                        className="expand colorized "
+                        style={{ "--color": "#25CF64" }}
+                      />
                   </Link>
                 </div>
                 {isOpen || (
                   <div className="d-center font-I">
                     <Button
-                      variant="secondary"
+                      className="btn-secondary rounded-pill px-4 updown"
                       onClick={() => {
                         setIsOpen(true);
                       }}
                     >
                       <span>my story</span>
-                      <FaAngleRight size={"1.7em"} />
+                      <FaAngleRight size={"1.7em"} className="expand" />
                     </Button>
                   </div>
                 )}
@@ -175,8 +205,8 @@ function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
           </Card.Body>
         </div>
         {isOpen ? (
-          <div className="vstack desc">
-            <div className="hstack h-100">
+          <div className="vstack desc w-100">
+            <div className="hstack w-100 h-100">
               <div className="ps-3">
                 <p>{person.desc.replaceAll("/age", age)}</p>
               </div>
@@ -205,8 +235,8 @@ function Team() {
     return open.some((e) => e);
   }
   return (
-    <div className="team h-100 d-center ">
-      <div className="hstack flex-wrap justify-content-between h-100 w-100">
+    <div className="team h-100 d-center overflow-x-hidden">
+      <div className="hstack d-center  flex-wrap justify-content-between h-100 w-100">
         {isSthOpen() || (
           <div className="d-flex ">
             <img
@@ -224,8 +254,6 @@ function Team() {
               className="d-xl-none d-vsm-none  d-block-n-imp"
               height={"50px"}
             />
-            
-          
           </div>
         )}
 

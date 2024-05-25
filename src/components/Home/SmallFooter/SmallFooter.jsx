@@ -12,7 +12,7 @@ export default function SmallFooter() {
     });
   }
   return (
-    <div className="small-footer font-M text-white hstack contact-info justify-content-evenly  py-3" onClick={()=>logIt() }>
+    <div className="small-footer font-M text-white hstack flex-wrap contact-info justify-content-evenly  py-3" onClick={()=>logIt() }>
       <Link to="mailto:goparajukarthik2@gmail.com?" className="d-center gap-2 text-white">
         <FaEnvelope />
         <span>goparajukarthik2@gmail.com</span>

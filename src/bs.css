@@ -1,3 +1,6 @@
+:root {
+  --glass: #fff5;
+}
 .d-center {
   display: flex !important;
   align-items: center;
@@ -75,4 +78,8 @@
 .unlink {
   text-decoration: none;
   color: inherit !important;
+}
+.btn-glass {
+  background: var(--glass);
+  backdrop-filter: blur(4px);
 }

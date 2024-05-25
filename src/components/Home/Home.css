@@ -1,0 +1,18 @@
+@keyframes danceLeft {
+  0% {
+    transform: translateX(0px);
+  }
+  10% {
+    transform: translate(0, -5px) scale(0.95) skew(10deg);
+  }
+  90% {
+    transform: translateX(-40px) skew(10deg);
+  }
+  100% {
+    transform: translateX(-40px) scale(1.5);
+  }
+}
+.left-on-touch:hover {
+  transform: translateX(-40px) scale(1.5);
+  animation: danceLeft 2s ease-out 0s 1 alternate;
+}
