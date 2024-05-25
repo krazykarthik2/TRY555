@@ -9,6 +9,7 @@ import NavTop from "./components/NavTop";
 import { app, analytics } from "./firebase/firebase";
 import ProductSingle from "./components/Products/ProductSingle/ProductSingle";
 import EditProductImages from "./components/UploadProducts/EditProductImages/EditProductImages";
+import EditGalleryImages from "./components/UploadGallery/EditGalleryImages/EditGalleryImages";
 console.log(app, analytics);
 const Home = lazy(() => import("./components/Home"));
 const About = lazy(() => import("./components/About"));
@@ -50,12 +51,15 @@ function App() {
               </Route>
               <Route path="manage">
                 <Route path="gallery">
-                  <Route path=":id" element={<UploadGallery />} />
+                  <Route path=":id">
+                    <Route path="" element={<UploadGallery />} />
+                    <Route path="images" element={<EditGalleryImages />} />
+                  </Route>
                 </Route>
                 <Route path="products">
-                  <Route path=":id" >
+                  <Route path=":id">
                     <Route path="" element={<UploadProducts />} />
-                    <Route path="images" element={<EditProductImages/>} />
+                    <Route path="images" element={<EditProductImages />} />
                   </Route>
                 </Route>
               </Route>

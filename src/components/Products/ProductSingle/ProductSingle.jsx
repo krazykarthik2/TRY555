@@ -5,14 +5,45 @@ import { getProduct } from "./../../../utils/products";
 import { analytics } from "./../../../firebase/firebase";
 import Loading from "./../../utils/Loading";
 import axios from "axios";
-import { Button, Form, FormControl, FormGroup } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Carousel,
+  CarouselItem,
+  Form,
+  FormControl,
+  FormGroup,
+} from "react-bootstrap";
 import { PiPaperPlaneRightFill } from "react-icons/pi";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaRupeeSign } from "react-icons/fa";
 import "./ProductSingle.css";
-const webHookURL = "https://webhooks.integrately.com/a/webhooks/027b68c97d1e45a68dd6d1ddd5effdba";
+import { listFiles, pathToImg } from "../../../utils/storage";
+const webHookURL =
+  "https://webhooks.integrately.com/a/webhooks/027b68c97d1e45a68dd6d1ddd5effdba";
 function ProductSingle() {
   const params = useParams();
   const [product, setProduct] = useState(null);
+
+  const [images, setImages] = useState([]);
+  const [imgURLs, setImgURLs] = useState([]);
+
+  useEffect(() => {
+    if (images) {
+      setImgURLs([]);
+      console.log(images);
+      images.forEach((img) =>
+        pathToImg("/products/" + params['id'] + "/" + img).then((e) =>
+          setImgURLs((x) => [...x, e])
+        )
+      );
+    }
+  }, [images]);
+  useEffect(() => {
+    if (params["id"]) {
+      listFiles("/products/" + params["id"]).then((e) => setImages(e));
+    }
+  }, [params]);
+
   useEffect(() => {
     getProduct(params["id"]).then((result) => {
       setProduct(result);
@@ -41,10 +72,10 @@ function ProductSingle() {
 
     axios
       .post(webHookURL, {
-        productId:params["id"],
+        productId: params["id"],
         name: formData.name,
         email: formData.email,
-        phone:formData.phone,
+        phone: formData.phone,
         time: new Date().valueOf(),
       })
       .then(() => {
@@ -59,18 +90,28 @@ function ProductSingle() {
   return product == null ? (
     <Loading />
   ) : (
-    <div className="vstack h-100 gap-3 p-3">
-      <div className="hstack flex-wrap gap-3">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="rounded-5"
-          style={{ width: "300px" }}
-        />
+    <div className="vstack h-100 gap-3 overflow-x-hidden ">
+      <div className="d-flex flex-wrap  justify-content-between w-100">
+        <Carousel className="vw-md-50 d-flex vw-90 mb-3 p-2">
+          {imgURLs.map((url) => (
+            <CarouselItem >
+              <img
+                variant="top"
+                src={url}
+                alt={product.name}
+                className="rounded-5 pe-none w-100 "
+                draggable={false}
+              />
+            </CarouselItem>
+          ))}
+        </Carousel>
 
-        <div className="vstack justify-content-center">
+        <div className="d-flex flex-column vw-md-45 justify-content-center ">
           <h2 className="text-start display-6 ">{product.name}</h2>
-          <p className="display-6">{product.price}*</p>
+          <p className="display-6">
+            <FaRupeeSign />
+            {product.price}*
+          </p>
           <span>*All prices are assured.</span>
           <span>
             * While customisation offers more values for a little bit more money
@@ -81,7 +122,7 @@ function ProductSingle() {
         <div className="vstack">
           <Form
             onSubmit={handleSubmit}
-            className="font-M rounded-3 d-flex flex-column justify-content-evenly h-100"
+            className="font-M rounded-3 d-flex flex-column gap-2 p-5 py-2 justify-content-evenly h-100"
           >
             <FormGroup controlId="formName">
               <FormControl
@@ -136,7 +177,7 @@ function ProductSingle() {
             )}
           </Form>
         </div>
-        <div className="vstack">
+        <div className="vstack justify-content-between">
           <h2>Order this</h2>
           <p>
             For quotations and other customisations or such please contact us

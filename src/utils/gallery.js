@@ -3,21 +3,21 @@ import { once } from "firebase/database";
 import { listFiles } from "./storage";
 import { mapToArray } from "./utilities";
 
-let prod = null;
+let collages = null;
 const database = getDatabase();
-const productRef = ref(database, "/products");
+const collageRef = ref(database, "/gallery");
 
-async function getProducts() {
+async function getCollages() {
   try {
-    const snapshot = await get(productRef); // Use get() for one-time retrieval
+    const snapshot = await get(collageRef); // Use get() for one-time retrieval
     if (snapshot.exists) {
-      prod = snapshot.val();
-      for (let i in prod)
-        prod[i] = {
-          ...prod[i],
-          images: await listFiles("products/" + prod[i].id),
+      collages = snapshot.val();
+      for (let i in collages)
+        collages[i] = {
+          ...collages[i],
+          images: await listFiles("gallery/" + collages[i].id),
         };
-      return mapToArray(prod);
+      return mapToArray(collages);
     } else {
       console.warn("No products found in the database.");
       return null; // Or return an empty array/object if appropriate
@@ -28,18 +28,18 @@ async function getProducts() {
   }
 }
 
-async function getProduct(product_id) {
-  if (prod != null) {
-    return prod[product_id];
+async function getCollage(gallery_id) {
+  if (collages != null) {
+    return collages[gallery_id];
   } else
     try {
-      const productSnapshot = await get(child(productRef, "/" + product_id));
+      const productSnapshot = await get(child(collageRef, "/" + gallery_id));
       if (productSnapshot.exists) {
         let val = productSnapshot.val();
-        val.images = listFiles("products/" + val.id);
+        val.images = listFiles("gallery/" + val.id);
         return val;
       } else {
-        console.warn("Product not found in database:", product_id);
+        console.warn("Product not found in database:", gallery_id);
         return null;
       }
     } catch (error) {
@@ -48,5 +48,5 @@ async function getProduct(product_id) {
     }
 }
 
-window.p = { prod, getProduct, getProducts };
-export { getProduct, getProducts };
+window.c = { collages, getCollage, getCollages };
+export { getCollage, getCollages };

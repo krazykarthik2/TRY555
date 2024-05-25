@@ -25,22 +25,37 @@
   transform: rotate(360deg);
   transform-origin: left top;
 }
+.vw-90 {
+  width: 90vw;
+}
 .w-min {
   width: min-content;
 }
-.h-min{
+.h-min {
   width: min-content;
 }
-.on-hover-opacity-1{
+.on-hover-opacity-1 {
   opacity: 1 !important;
 }
 /* custom.css */
 @media only screen and (min-width: 870px) {
-  .d-870-none{
+  .d-870-none {
     display: none !important;
   }
-  .d-870-block{
+  .d-870-block {
     display: block !important;
+  }
+  .vw-md-90 {
+    width: 90vw;
+  }
+  .vw-md-50 {
+    width: 50vw;
+  }
+  .vw-md-40 {
+    width: 40vw;
+  }
+  .vw-md-45 {
+    width: 45vw;
   }
 }
 .d-none-n-imp {
@@ -57,7 +72,7 @@
     display: none !important;
   }
 }
-.unlink{
+.unlink {
   text-decoration: none;
   color: inherit !important;
 }
