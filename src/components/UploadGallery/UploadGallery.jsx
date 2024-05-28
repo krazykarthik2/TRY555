@@ -40,6 +40,7 @@ function UploadGallery() {
   const [mode, setMode] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  window.lc = location
   useEffect(() => {
     const givenId = params["id"];
     let __mode = givenId != null ? "edit" : "upload";
@@ -55,6 +56,16 @@ function UploadGallery() {
     }
   }, [params]);
 
+  useEffect(() => {
+    if ( id == "") {
+      if (location.state != null) {
+        let collage_ref = location.state;
+        setId(collage_ref.id);
+        setTitle(collage_ref.title);
+        setDesc(collage_ref.desc);
+      }
+    }
+  }, [location]);
   const postDb = async (image = null) => {
     const collageRef = ref(database, `gallery/${id}`);
     let data = {

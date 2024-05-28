@@ -51,23 +51,31 @@ function AddImgs({ id, location }) {
   const [prevImgLinks, setPrevImgLinks] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(null);
   const [uploadEach, setUploadEach] = useState([]);
-  
+
   const navigate = useNavigate();
   useEffect(() => {
     if (prevImgs) setPrevImgLinks(prevImgs.map((e) => URL.createObjectURL(e)));
   }, [prevImgs]);
 
   useEffect(() => {
-    console.log('change in uploadEach')
+    console.log("change in uploadEach");
     if (uploadEach.length == 0) setUploadStatus(null);
     else if (uploadEach.every((e) => e == true)) setUploadStatus("success");
     else setUploadStatus("uploading");
   }, [uploadEach]);
 
-  useEffect(() => {
-    if (uploadStatus == "success") {
+  function nextStep() {
+    if (location.state)
       if (location.state.continue__)
         navigate(location.state.continue__, { state: location.state });
+
+    setPrevImgs([]);
+    setUploadEach([]);
+    setUploadStatus(null);
+  }
+  useEffect(() => {
+    if (uploadStatus == "success") {
+      nextStep();
     }
   });
 
@@ -103,8 +111,8 @@ function AddImgs({ id, location }) {
   };
   function afterUpload(index) {
     setUploadEach((e) => {
-      let x =[...e];
-      console.log('upload completed for',index)
+      let x = [...e];
+      console.log("upload completed for", index);
       x[index] = true;
       return x;
     });
@@ -150,6 +158,7 @@ function AddImgs({ id, location }) {
   }
   function handleSubmit() {
     console.log("handling submit");
+    if (prevImgs.length == 0) nextStep();
     prevImgs.forEach((img, ind) => {
       handleUpload(img, ind);
     });
@@ -171,10 +180,10 @@ function AddImgs({ id, location }) {
                 width: "200px",
               }}
             />
-          {/* uploadEach[{ind}] = {uploadEach[ind]} */}
+            {/* uploadEach[{ind}] = {uploadEach[ind]} */}
             {uploadEach[ind] == true && (
               <div className="pe-none position-absolute top-50 start-50 translate-middle ">
-                <FaCheck size={"100px"} color="#000"/>
+                <FaCheck size={"100px"} color="#000" />
               </div>
             )}
             {uploadEach[ind]?.bytesTransferred != null && (
@@ -183,7 +192,8 @@ function AddImgs({ id, location }) {
 
                 <ProgressBar
                   now={
-                    (uploadEach[ind].bytesTransferred / uploadEach[ind].totalBytes) *
+                    (uploadEach[ind].bytesTransferred /
+                      uploadEach[ind].totalBytes) *
                     100
                   }
                 />

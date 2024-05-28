@@ -1,9 +1,15 @@
-import { deleteObject, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, ProgressBar } from "react-bootstrap";
 import { FaCheck, FaPlus } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { listFiles, pathToImg } from "../../../utils/storage";
 import { ref as refStorage } from "firebase/storage";
 const storage = getStorage();
@@ -42,14 +48,35 @@ function AddImgs({ id }) {
   const [prevImgLinks, setPrevImgLinks] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(null);
   const [uploadEach, setUploadEach] = useState([]);
+  const location = useLocation();
+
+  const navigate = useNavigate();
   useEffect(() => {
     if (prevImgs) setPrevImgLinks(prevImgs.map((e) => URL.createObjectURL(e)));
   }, [prevImgs]);
+
   useEffect(() => {
+    console.log("change in uploadEach");
     if (uploadEach.length == 0) setUploadStatus(null);
-    else if (uploadEach.every(true)) setUploadStatus("success");
+    else if (uploadEach.every((e) => e == true)) setUploadStatus("success");
     else setUploadStatus("uploading");
   }, [uploadEach]);
+
+  function nextStep() {
+    if (location.state)
+      if (location.state.continue__)
+        navigate(location.state.continue__, { state: location.state });
+
+    setPrevImgs([])
+    setUploadEach([])
+    setUploadStatus(null)
+  }
+  useEffect(() => {
+    if (uploadStatus == "success") {
+      nextStep();
+    }
+  });
+
   const dropAreaRef = useRef(null);
 
   const preventDefaults = (e) => {
@@ -80,15 +107,17 @@ function AddImgs({ id }) {
     const files = e.target.files;
     handleFiles(files);
   };
+
   function afterUpload(index) {
     setUploadEach((e) => {
-      e[index] = true;
-      return e;
+      let x = [...e];
+      console.log("upload completed for", index);
+      x[index] = true;
+      return x;
     });
   }
 
   function handleUpload(image, index) {
-    
     setUploadStatus("uploading");
     // Upload image to Firebase Storage
     const storageRef = refStorage(
@@ -96,7 +125,28 @@ function AddImgs({ id }) {
       `/products/${id}/${Date.now()}.${image.type.split("/")[1]}`
     );
     console.log("uploading file");
-    const uploadTask = uploadBytes(storageRef, image);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+
+    uploadTask.on("state_changed", (snapshot) => {
+      switch (snapshot.state) {
+        case "running":
+          setUploadEach((e) => {
+            let x = [...e];
+            x[index] = {
+              bytesTransferred: snapshot.bytesTransferred,
+              totalBytes: snapshot.totalBytes,
+            };
+            return x;
+          });
+          break;
+        default:
+          setUploadEach((e) => {
+            let x = [...e];
+            x[index] = snapshot.state;
+            return x;
+          });
+      }
+    });
     // Handle upload progress (optional)
     uploadTask
       .then((e) => afterUpload(index))
@@ -106,6 +156,8 @@ function AddImgs({ id }) {
       });
   }
   function handleSubmit() {
+    console.log("handling submit");
+    if (prevImgs.length == 0) nextStep();
     prevImgs.forEach((img, ind) => {
       handleUpload(img, ind);
     });
@@ -114,8 +166,9 @@ function AddImgs({ id }) {
   return (
     <div className="d-center vstack">
       <div className="d-center flex-wrap">
-        {prevImgLinks.map((prev_link_, ind) => (
+      {prevImgLinks.map((prev_link_, ind) => (
           <button
+            key={ind}
             className=" btn position-relative w-min img-cont"
             onClick={() => setPrevImgs((nn) => nn.filter((e, i) => i != ind))}
           >
@@ -126,10 +179,29 @@ function AddImgs({ id }) {
                 width: "200px",
               }}
             />
+          {/* uploadEach[{ind}] = {uploadEach[ind]} */}
+            {uploadEach[ind] == true && (
+              <div className="pe-none position-absolute top-50 start-50 translate-middle ">
+                <FaCheck size={"100px"} color="#000"/>
+              </div>
+            )}
+            {uploadEach[ind]?.bytesTransferred != null && (
+              <div className="hstack text-white">
+                {uploadEach[ind].bytesTransferred}
 
-            <Button className="pe-none btn-op position-absolute top-50 start-50 translate-middle ">
+                <ProgressBar
+                  now={
+                    (uploadEach[ind].bytesTransferred / uploadEach[ind].totalBytes) *
+                    100
+                  }
+                />
+                {uploadEach[ind].totalBytes}
+              </div>
+            )}
+
+            <div className="pe-none btn btn-primary btn-op position-absolute top-50 start-50 translate-middle ">
               <RiDeleteBin5Fill size={"60px"} />
-            </Button>
+            </div>
           </button>
         ))}
       </div>
@@ -175,7 +247,7 @@ function AddImgs({ id }) {
         />
       </div>
       <div className="d-center">
-        <Button className="d-center gap-2">
+        <Button className="d-center gap-2" onClick={handleSubmit} disabled={uploadStatus=='uploading'}>
           <span className="font-I">Submit</span>
           <FaCheck size={"1.2em"} />
         </Button>

@@ -30,8 +30,8 @@ function ProductCard({ product }) {
     >
       <Card className="product-card rounded-5 p-2 ">
         <Carousel>
-          {imgURLs.map((url) => (
-            <CarouselItem>
+          {imgURLs.map((url,index) => (
+            <CarouselItem key={index}>
               <Card.Img
                 variant="top"
                 src={url}

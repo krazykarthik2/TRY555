@@ -36,8 +36,6 @@ function UploadProducts() {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState(null);
-  const [imgURL, setImgURL] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(null);
   const [mode, setMode] = useState("");
   const navigate = useNavigate();
@@ -56,13 +54,7 @@ function UploadProducts() {
     }
   }, [params]);
 
-  window.imgURL = imgURL;
-  window.image = image;
-  useEffect(() => {
-    setImgURL(image == null ? null : URL.createObjectURL(image));
-  }, [image]);
-
-  const postDb = async (image = null) => {
+  const postDb = async () => {
     const productRef = ref(database, `products/${id}`);
     let data = {
       id,
@@ -74,7 +66,7 @@ function UploadProducts() {
 
   window.postDb = postDb;
 
-  function afterUpload(snapshot) {
+  function handlePost(snapshot) {
     console.log("updating db");
     try {
       postDb(snapshot ? snapshot.ref.name : null);
@@ -85,82 +77,25 @@ function UploadProducts() {
       setId("");
       setName("");
       setPrice("");
-      setImage(null);
-      setImgURL(null);
-
       setUploadStatus("success");
     } catch (error) {
       console.log(error);
     }
   }
 
-  function handleUpload() {
-    // Upload image to Firebase Storage
-    const storageRef = refStorage(
-      storage,
-      `/products/${id}/${Date.now()}.${image.type.split("/")[1]}`
-    );
-    console.log("uploading file");
-    const uploadTask = uploadBytes(storageRef, image);
-    // Handle upload progress (optional)
-    uploadTask.then(afterUpload).catch((error) => {
-      console.error("Error uploading image:", error);
-      setUploadStatus("error");
-    });
-  }
-
   const handleSubmit = async () => {
     setUploadStatus("uploading");
-    if (
-      !id ||
-      !name ||
-      !price ||
-      (mode == "upload" && !image) ||
-      mode == "edit"
-    ) {
+    if (!id || !name || !price) {
       alert("Missing required product data!");
       return;
     }
 
     try {
-      if (mode == "upload" || mode == "edit")
-        handleUpload(); //in handle upload it sets point for afterupload
-      else afterUpload();
+      handlePost();
     } catch (error) {
       console.error("Error uploading product:", error);
       setUploadStatus("error");
     }
-  };
-
-  const dropAreaRef = useRef(null);
-
-  const preventDefaults = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const highlight = () => {
-    dropAreaRef.current.classList.add("highlight");
-  };
-
-  const unhighlight = () => {
-    dropAreaRef.current.classList.remove("highlight");
-  };
-
-  const handleDrop = (e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    handleFiles(files);
-  };
-
-  const handleFiles = (files) => {
-    const fileArray = Array.from(files);
-    setImage(fileArray[0]);
-  };
-
-  const handleChange = (e) => {
-    const files = e.target.files;
-    handleFiles(files);
   };
 
   function handleDelete() {
@@ -211,67 +146,19 @@ function UploadProducts() {
               required
             />
           </div>
-          {mode == "edit" ? (
-            <Link to="images" className="btn btn-primary flex-column d-center rounded-4">
-              {" "}
-              <GrGallery size={"3em"} />
-              <span>Manage<br/>Images</span>
-            </Link>
-          ) : (
-            <div>
-              <label
-                htmlFor="image"
-                className="btn btn-primary flex-column d-center rounded-4"
-                ref={dropAreaRef}
-                onDragEnter={preventDefaults}
-                onDragOver={(e) => {
-                  preventDefaults(e);
-                  highlight();
-                }}
-                onDragLeave={(e) => {
-                  preventDefaults(e);
-                  unhighlight();
-                }}
-                onDrop={(e) => {
-                  preventDefaults(e);
-                  unhighlight();
-                  handleDrop(e);
-                }}
-              >
-                <>
-                  {imgURL == null ? (
-                    <>
-                      <GrGallery size={"3em"} />
-                      <span>Image</span>
-                    </>
-                  ) : (
-                    <div className="position-relative img-cont">
-                      <img
-                        src={imgURL}
-                        style={{
-                          width: "60vmin",
-                          height: "60vmin",
-                          maxHeight: "200px",
-                          maxWidth: "200px",
-                        }}
-                      />
+          <Link
+            to="images"
+            className="btn btn-primary flex-column d-center rounded-4"
+          >
+            {" "}
+            <GrGallery size={"3em"} />
+            <span>
+              Manage
+              <br />
+              Images
+            </span>
+          </Link>
 
-                      <Button className="pe-none btn-op position-absolute top-50 start-50 translate-middle ">
-                        Change
-                      </Button>
-                    </div>
-                  )}
-                </>
-              </label>
-              <input
-                type="file"
-                id="image"
-                accept="image/*"
-                hidden
-                onInput={handleChange}
-              />
-            </div>
-          )}
           <div className="d-center">
             <button
               type="submit"

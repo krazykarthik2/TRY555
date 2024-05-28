@@ -1,12 +1,13 @@
+import { getAuth } from "firebase/auth";
 import React, { useEffect, useMemo, useState } from "react";
 import { Card, Carousel, CarouselItem } from "react-bootstrap";
-import "./Gallery.css"; // Import custom CSS for additional styling
-import { getCollages } from "./../../utils/gallery";
-import { listFiles, pathToImg } from "../../utils/storage";
-import { listAll, ref as refStorage } from "firebase/storage";
+import { FaEllipsis } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { getAuth } from "firebase/auth";
-const auth = getAuth()
+import { listFiles, pathToImg } from "../../utils/storage";
+import { getCollages } from "./../../utils/gallery";
+import LazyLoadImage from "./../utils/LazyLoadImage";
+import "./Gallery.css"; // Import custom CSS for additional styling
+const auth = getAuth();
 function CardImg({ index, src, title }) {
   const fileName = title;
   const cardTitle = "share this";
@@ -60,7 +61,7 @@ function CardImg({ index, src, title }) {
 function Collage({ collage }) {
   const [images, setImages] = useState([]);
   const [imgURLs, setImgURLs] = useState([]);
-
+  const [imgMap, setImgMap] = useState({});
   useMemo(() => {
     listFiles("gallery/" + collage.id).then((fileArr) => {
       if (images.length == 0) setImages(fileArr);
@@ -69,45 +70,52 @@ function Collage({ collage }) {
 
   useEffect(() => {
     if (images) {
-      setImgURLs([]);
-      console.log(images);
       images.forEach((img) =>
-        pathToImg("/gallery/" + collage.id + "/" + img).then((e) =>
-          setImgURLs((x) => [...x, e])
+        pathToImg("/gallery/" + collage.id + "/" + img).then((downloadLink) =>
+          setImgMap((e) => ({ ...e, [img]: downloadLink }))
         )
       );
     }
   }, [images]);
 
+  useEffect(() => {
+    let x = [];
+    for (let img of images) x.push(imgMap[img]);
+    console.log(x);
+    setImgURLs(x.filter((e) => e));
+  }, [imgMap]);
+
   return (
     <Link
-      className="gallery-card-container unlink"
+      className="gallery-card-container unlink mw-px-400"
       to={(auth.currentUser ? "/admin/manage/gallery/" : "") + "" + collage.id}
     >
-      <Carousel>
+      <Carousel interval={null}>
         {imgURLs.map((url, index) => (
           <CarouselItem key={index}>
-            <Card.Img
-              variant="top"
+            <LazyLoadImage
               src={url}
               alt={collage.title + "#" + index}
-              className="rounded-5 pe-none"
+              className="rounded-5 pe-none card-img-top"
               draggable={false}
             />
           </CarouselItem>
         ))}
       </Carousel>
+      
       <h3>{collage.title}</h3>
-      <div
-        className="font-M"
-        style={{
-          overflow: "hidden",
-          maxHeight: "3em",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {collage.description}
-      </div>
+        <div
+          className="font-M"
+          style={{
+            overflow: "hidden",
+            maxHeight: "3em",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {collage.description}
+        </div>
+        <FaEllipsis className="flex-grow-1" size={'1.2em'}/>
+    
     </Link>
   );
 }

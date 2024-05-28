@@ -83,3 +83,6 @@
   background: var(--glass);
   backdrop-filter: blur(4px);
 }
+.mw-px-400{
+  max-width: 400px;
+}
