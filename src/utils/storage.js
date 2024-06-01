@@ -47,4 +47,5 @@ async function deleteDir(directoryPath) {
     }
   }
 }
-export { pathToImg, listFiles, deleteDir };
+export { deleteDir, listFiles, pathToImg };
+

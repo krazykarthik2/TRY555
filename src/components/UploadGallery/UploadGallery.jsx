@@ -1,25 +1,23 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, remove, set } from "firebase/database";
 import {
-  deleteObject,
-  getStorage,
-  ref as refStorage,
-  uploadBytes,
+  getStorage
 } from "firebase/storage";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, FormControl } from "react-bootstrap";
 import { CgNametag } from "react-icons/cg";
-import { FaHashtag, FaRupeeSign, FaTrash } from "react-icons/fa";
+import { FaHashtag } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { getCollage } from "../../utils/gallery";
-import { deleteDir, pathToImg } from "../../utils/storage";
-import { RiDeleteBin2Fill, RiDeleteBin5Fill } from "react-icons/ri";
 import { MdOutlineTextsms } from "react-icons/md";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { getCollage } from "../../utils/gallery";
+import { deleteDir } from "../../utils/storage";
+import Back from "../utils/Back";
+import PlaneButton from "../utils/PlaneButton/PlaneButton";
 const auth = getAuth();
 const storage = getStorage();
 const database = getDatabase();
-window.auth = auth;
 function UploadGallery() {
   const params = useParams();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -40,7 +38,6 @@ function UploadGallery() {
   const [mode, setMode] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  window.lc = location
   useEffect(() => {
     const givenId = params["id"];
     let __mode = givenId != null ? "edit" : "upload";
@@ -57,7 +54,7 @@ function UploadGallery() {
   }, [params]);
 
   useEffect(() => {
-    if ( id == "") {
+    if (id == "") {
       if (location.state != null) {
         let collage_ref = location.state;
         setId(collage_ref.id);
@@ -76,12 +73,11 @@ function UploadGallery() {
     return set(collageRef, data);
   };
 
-  window.postDb = postDb;
 
-  function afterUpload(snapshot) {
+  async function afterUpload(snapshot) {
     console.log("updating db");
     try {
-      postDb(snapshot ? snapshot.ref.name : null);
+      console.log(await postDb(snapshot ? snapshot.ref.name : null));
 
       if (mode == "edit") {
         navigate("/gallery");
@@ -104,7 +100,7 @@ function UploadGallery() {
     }
 
     try {
-      afterUpload();
+      await afterUpload();
     } catch (error) {
       console.error("Error uploading collage:", error);
       setUploadStatus("error");
@@ -127,7 +123,10 @@ function UploadGallery() {
   }
 
   return (
-    <div className="d-center w-100 h-100">
+    <div className="d-center w-100 h-100 position-relative">
+      <div className="position-absolute top-0 start-0 m-4">
+        <Back to="/admin" />
+      </div>
       <div className="vstack h-100 " style={{ maxWidth: "500px" }}>
         <form
           onSubmit={(e) => e.preventDefault()}
@@ -170,8 +169,8 @@ function UploadGallery() {
             />
           </div>
           <Button
+            disabled={id==""}
             onClick={() => manageImgs()}
-            to="images"
             className="btn btn-primary flex-column d-center rounded-4"
           >
             {" "}
@@ -184,14 +183,19 @@ function UploadGallery() {
           </Button>
 
           <div className="d-center">
-            <button
+            <PlaneButton
               type="submit"
               disabled={!isLoggedIn || uploadStatus === "uploading"}
               onClick={handleSubmit}
-              className="rounded-pill"
-            >
-              {uploadStatus === "uploading" ? "Uploading..." : "Upload Collage"}
-            </button>
+              text={
+                uploadStatus === "uploading"
+                  ? "Uploading..."
+                  : uploadStatus == "success"
+                  ? "Successful"
+                  : "Upload Collage"
+              }
+              fly={uploadStatus === "success"}
+            />
           </div>
           <div className="d-center">
             {uploadStatus && (

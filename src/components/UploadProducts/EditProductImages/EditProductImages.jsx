@@ -1,17 +1,19 @@
 import {
   deleteObject,
   getStorage,
-  ref,
-  uploadBytes,
+  ref as refStorage,
   uploadBytesResumable,
 } from "firebase/storage";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Card, ProgressBar } from "react-bootstrap";
 import { FaCheck, FaPlus } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { listFiles, pathToImg } from "../../../utils/storage";
-import { ref as refStorage } from "firebase/storage";
+import Bytes from "src/components/utils/Bytes";
+import Loading from "src/components/utils/Loading";
+import Back from "src/components/utils/Back";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 const storage = getStorage();
 function ImgComp({ img, afterDelete }) {
   const [imgURL, setImgURL] = useState("");
@@ -65,11 +67,14 @@ function AddImgs({ id }) {
   function nextStep() {
     if (location.state)
       if (location.state.continue__)
-        navigate(location.state.continue__, { state: location.state });
+        navigate(location.state.continue__, {
+          state: location.state,
+          continue__: null,
+        });
 
-    setPrevImgs([])
-    setUploadEach([])
-    setUploadStatus(null)
+    setPrevImgs([]);
+    setUploadEach([]);
+    setUploadStatus(null);
   }
   useEffect(() => {
     if (uploadStatus == "success") {
@@ -166,7 +171,7 @@ function AddImgs({ id }) {
   return (
     <div className="d-center vstack">
       <div className="d-center flex-wrap">
-      {prevImgLinks.map((prev_link_, ind) => (
+        {prevImgLinks.map((prev_link_, ind) => (
           <button
             key={ind}
             className=" btn position-relative w-min img-cont"
@@ -179,23 +184,27 @@ function AddImgs({ id }) {
                 width: "200px",
               }}
             />
-          {/* uploadEach[{ind}] = {uploadEach[ind]} */}
+            {/* uploadEach[{ind}] = {uploadEach[ind]} */}
             {uploadEach[ind] == true && (
               <div className="pe-none position-absolute top-50 start-50 translate-middle ">
-                <FaCheck size={"100px"} color="#000"/>
+                <FaCheck size={"100px"} color="#000" />
               </div>
             )}
             {uploadEach[ind]?.bytesTransferred != null && (
-              <div className="hstack text-white">
-                {uploadEach[ind].bytesTransferred}
-
-                <ProgressBar
-                  now={
-                    (uploadEach[ind].bytesTransferred / uploadEach[ind].totalBytes) *
-                    100
-                  }
-                />
-                {uploadEach[ind].totalBytes}
+              <div className="vstack text-white">
+                <div>
+                  <ProgressBar
+                    now={
+                      (uploadEach[ind].bytesTransferred /
+                        uploadEach[ind].totalBytes) *
+                      100
+                    }
+                  />
+                </div>
+                <div className="hstack justify-content-between">
+                  <Bytes value={uploadEach[ind].bytesTransferred} />
+                  <Bytes value={uploadEach[ind].totalBytes} />
+                </div>
               </div>
             )}
 
@@ -247,7 +256,11 @@ function AddImgs({ id }) {
         />
       </div>
       <div className="d-center">
-        <Button className="d-center gap-2" onClick={handleSubmit} disabled={uploadStatus=='uploading'}>
+        <Button
+          className="d-center gap-2"
+          onClick={handleSubmit}
+          disabled={uploadStatus == "uploading"}
+        >
           <span className="font-I">Submit</span>
           <FaCheck size={"1.2em"} />
         </Button>
@@ -255,6 +268,7 @@ function AddImgs({ id }) {
     </div>
   );
 }
+const auth = getAuth();
 function EditProductImages() {
   const params = useParams();
   const [id, setId] = useState("");
@@ -268,20 +282,42 @@ function EditProductImages() {
       listFiles("/products/" + id).then((e) => setImages(e));
     }
   }, [id]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    // Set an authentication state observer and get user data
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
 
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  
   return (
-    <div className="vstack gap-2">
-      <div className="hstack gap-4 flex-wrap p-4">
-        {images.map((e, i) => (
-          <ImgComp
-            key={i}
-            img={"products/" + id + "/" + e}
-            afterDelete={() => setImages((x) => x.filter((e, ind) => i != ind))}
-          />
-        ))}
-      </div>
-      <AddImgs id={id} />
-    </div>
+    <>
+      {loading && <Loading />}
+      {user && (
+        <div className="vstack gap-2">
+          <Back to="../../" />
+          <div className="hstack gap-4 flex-wrap p-4">
+            {images.map((e, i) => (
+              <ImgComp
+                key={i}
+                img={"products/" + id + "/" + e}
+                afterDelete={() =>
+                  setImages((x) => x.filter((e, ind) => i != ind))
+                }
+              />
+            ))}
+          </div>
+          <AddImgs id={id} />
+        </div>
+      )}
+    </>
   );
 }
 

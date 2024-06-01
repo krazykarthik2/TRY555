@@ -1,8 +1,6 @@
-import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
 import { FaAngleRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import SmallFooter from "./../Home/SmallFooter";
+import SmallFooter from "../Home/SmallFooter";
 function About() {
   return (
     <div className="h-100 text-start  d-flex flex-column justify-content-between about-container px-3">

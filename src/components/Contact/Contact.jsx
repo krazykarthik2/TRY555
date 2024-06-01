@@ -1,18 +1,18 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { Button, Form, FormControl, FormGroup } from "react-bootstrap";
+import { logEvent } from "firebase/analytics";
+import { useState } from "react";
+import { Form, FormControl, FormGroup } from "react-bootstrap";
 import {
   FaCheckCircle,
   FaInstagram,
   FaTelegram,
   FaWhatsapp,
 } from "react-icons/fa";
-import { PiPaperPlaneRightFill } from "react-icons/pi";
-import SmallFooter from "../Home/SmallFooter/SmallFooter";
-import "./Contact.css";
 import { Link } from "react-router-dom";
-import { logEvent } from "firebase/analytics";
-import {analytics} from "./../../firebase/firebase"
+import SmallFooter from "../Home/SmallFooter/SmallFooter";
+import PlaneButton from "../utils/PlaneButton/PlaneButton";
+import { analytics } from "./../../firebase/firebase";
+import "./Contact.css";
 const org = {
   insta: "https://instagram.com/realtry555",
   whatsapp: "https://wa.me/+919502520447/?text=hi",
@@ -37,8 +37,8 @@ function Contact() {
     e.preventDefault();
     // Implement your form submission logic here
     console.log(formData);
-    logEvent(analytics,"contact_via_form", {
-      time:Date.now()
+    logEvent(analytics, "contact_via_form", {
+      time: Date.now(),
     });
 
     axios
@@ -124,17 +124,9 @@ function Contact() {
               />
             </FormGroup>
 
-            <Button
-              variant="primary"
-              type="submit"
-              className="font-I rounded-pill d-flex align-items-center justify-content-center gap-2 "
-            >
-              <h3 className="m-0">Submit</h3>
-              <div className={"icon ms-3 " + (no_res_sent > 0 ? "sent" : "")}>
-                <PiPaperPlaneRightFill size={"1.2em"} />
-              </div>
-            </Button>
-            {no_res_sent ==0|| <div>We'll contact you shortly</div>}
+          
+            <PlaneButton type="submit" text="Submit" fly={no_res_sent > 0} />
+            {no_res_sent == 0 || <div>We'll contact you shortly</div>}
             {no_res_sent > 0 && (
               <div className="hstack gap-2">
                 <FaCheckCircle size={"2em"} />

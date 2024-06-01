@@ -1,25 +1,21 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, remove, set } from "firebase/database";
-import {
-  deleteObject,
-  getStorage,
-  ref as refStorage,
-  uploadBytes,
-} from "firebase/storage";
-import React, { useEffect, useRef, useState } from "react";
+import { getStorage } from "firebase/storage";
+import { useEffect, useState } from "react";
 import { Button, FormControl } from "react-bootstrap";
 import { CgNametag } from "react-icons/cg";
-import { FaHashtag, FaRupeeSign, FaTrash } from "react-icons/fa";
+import { FaHashtag, FaRupeeSign } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { getProduct } from "../../utils/products";
-import { deleteDir, pathToImg } from "../../utils/storage";
+import { deleteDir } from "../../utils/storage";
 import "./UploadProducts.css";
-import { RiDeleteBin2Fill, RiDeleteBin5Fill } from "react-icons/ri";
+import PlaneButton from "../utils/PlaneButton/PlaneButton";
+import Back from "../utils/Back";
 const auth = getAuth();
 const storage = getStorage();
 const database = getDatabase();
-window.auth = auth;
 function UploadProducts() {
   const params = useParams();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,6 +35,7 @@ function UploadProducts() {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [mode, setMode] = useState("");
   const navigate = useNavigate();
+  const location = useLocation()
   useEffect(() => {
     const givenId = params["id"];
     let __mode = givenId != null ? "edit" : "upload";
@@ -64,34 +61,33 @@ function UploadProducts() {
     return set(productRef, data);
   };
 
-  window.postDb = postDb;
-
-  function handlePost(snapshot) {
+  async function handlePost(snapshot) {
     console.log("updating db");
     try {
-      postDb(snapshot ? snapshot.ref.name : null);
+      console.log(await postDb(snapshot ? snapshot.ref.name : null));
 
       if (mode == "edit") {
         navigate("/products");
       }
+
       setId("");
       setName("");
       setPrice("");
       setUploadStatus("success");
     } catch (error) {
+      console.log("error at handlepost");
       console.log(error);
     }
   }
 
   const handleSubmit = async () => {
-    setUploadStatus("uploading");
     if (!id || !name || !price) {
       alert("Missing required product data!");
       return;
     }
-
+    setUploadStatus("uploading");
     try {
-      handlePost();
+      await handlePost();
     } catch (error) {
       console.error("Error uploading product:", error);
       setUploadStatus("error");
@@ -102,13 +98,26 @@ function UploadProducts() {
     deleteDir("/products/" + id);
     remove(ref(database, "/products/" + id));
   }
+  function manageImgs() {
+    navigate(`/admin/manage/products/${id}/images`, {
+      state: {
+        id: id,
+        name: name,
+        price: price,
+        continue__: location.pathname,
+      },
+    });
+  }
 
   return (
-    <div className="d-center w-100 h-100">
-      <div className="vstack h-100 " style={{ maxWidth: "500px" }}>
+    <div className="d-center w-100 h-100 position-relative">
+      <div className="position-absolute top-0 start-0 m-4">
+        <Back to="/admin" />
+      </div>
+      <div className="vstack h-100" style={{ maxWidth: "500px" }}>
         <form
           onSubmit={(e) => e.preventDefault()}
-          className=" d-flex flex-column p-4 gap-3 font-M "
+          className=" d-flex flex-column p-4 gap-3 font-M bottom-0"
         >
           <div className="hstack">
             <FaHashtag size={"3em"} />
@@ -146,8 +155,10 @@ function UploadProducts() {
               required
             />
           </div>
-          <Link
-            to="images"
+
+          <Button
+            disabled={id==""}
+            onClick={() => manageImgs()}
             className="btn btn-primary flex-column d-center rounded-4"
           >
             {" "}
@@ -157,17 +168,22 @@ function UploadProducts() {
               <br />
               Images
             </span>
-          </Link>
+          </Button>
 
           <div className="d-center">
-            <button
+            <PlaneButton
               type="submit"
               disabled={!isLoggedIn || uploadStatus === "uploading"}
               onClick={handleSubmit}
-              className="rounded-pill"
-            >
-              {uploadStatus === "uploading" ? "Uploading..." : "Upload Product"}
-            </button>
+              text={
+                uploadStatus === "uploading"
+                  ? "Uploading..."
+                  : uploadStatus === "success"
+                  ? "Successful"
+                  : "Upload Product"
+              }
+              fly={uploadStatus === "success"}
+            />
           </div>
           <div className="d-center">
             {uploadStatus && (

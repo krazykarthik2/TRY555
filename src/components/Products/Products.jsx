@@ -54,8 +54,6 @@ function ProductCard({ product }) {
 }
 function Products() {
   const [products, setProducts] = useState([]);
-  window.products = products;
-  window.getProducts = getProducts;
   useEffect(() => {
     getProducts().then((result) => setProducts(result));
   }, []);

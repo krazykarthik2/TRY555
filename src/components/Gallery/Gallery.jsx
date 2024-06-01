@@ -121,7 +121,6 @@ function Collage({ collage }) {
 }
 function Gallery() {
   const [collages, setCollages] = useState([]);
-  window.collage = collages;
   useEffect(() => {
     getCollages().then((result) => setCollages(result));
   }, []);

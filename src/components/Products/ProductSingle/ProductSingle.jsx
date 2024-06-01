@@ -1,23 +1,21 @@
-import { logEvent } from "firebase/analytics";
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { getProduct } from "./../../../utils/products";
-import { analytics } from "./../../../firebase/firebase";
-import Loading from "./../../utils/Loading";
 import axios from "axios";
+import { logEvent } from "firebase/analytics";
+import { useEffect, useState } from "react";
 import {
-  Button,
-  Card,
   Carousel,
   CarouselItem,
   Form,
   FormControl,
-  FormGroup,
+  FormGroup
 } from "react-bootstrap";
-import { PiPaperPlaneRightFill } from "react-icons/pi";
 import { FaCheckCircle, FaRupeeSign } from "react-icons/fa";
-import "./ProductSingle.css";
+import { Link, useParams } from "react-router-dom";
+import PlaneButton from "src/components/utils/PlaneButton/PlaneButton";
 import { listFiles, pathToImg } from "../../../utils/storage";
+import { analytics } from "./../../../firebase/firebase";
+import { getProduct } from "./../../../utils/products";
+import Loading from "./../../utils/Loading";
+import "./ProductSingle.css";
 const webHookURL =
   "https://webhooks.integrately.com/a/webhooks/027b68c97d1e45a68dd6d1ddd5effdba";
 function ProductSingle() {
@@ -32,7 +30,7 @@ function ProductSingle() {
       setImgURLs([]);
       console.log(images);
       images.forEach((img) =>
-        pathToImg("/products/" + params['id'] + "/" + img).then((e) =>
+        pathToImg("/products/" + params["id"] + "/" + img).then((e) =>
           setImgURLs((x) => [...x, e])
         )
       );
@@ -94,7 +92,7 @@ function ProductSingle() {
       <div className="d-flex flex-wrap  justify-content-between w-100">
         <Carousel className="vw-md-50 d-flex vw-90 mb-3 p-2">
           {imgURLs.map((url) => (
-            <CarouselItem >
+            <CarouselItem>
               <img
                 variant="top"
                 src={url}
@@ -158,16 +156,7 @@ function ProductSingle() {
               />
             </FormGroup>
 
-            <Button
-              variant="primary"
-              type="submit"
-              className="font-I rounded-pill d-flex align-items-center justify-content-center gap-2 "
-            >
-              <h3 className="m-0">Submit</h3>
-              <div className={"icon ms-3 " + (no_res_sent > 0 ? "sent" : "")}>
-                <PiPaperPlaneRightFill size={"1.2em"} />
-              </div>
-            </Button>
+            <PlaneButton type="submit" text="Submit" fly={no_res_sent > 0} />
             {no_res_sent == 0 || <div>We'll contact you shortly</div>}
             {no_res_sent > 0 && (
               <div className="hstack gap-2">

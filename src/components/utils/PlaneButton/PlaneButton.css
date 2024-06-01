@@ -1,0 +1,26 @@
+button.planeButton {
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  * {
+    transition: all 1s ease;
+    pointer-events: none;
+  }
+}
+button.planeButton .icon.sent {
+  transform: translateX(250%);
+}
+button.planeButton:active {
+  .icon {
+    transform: translateX(-100%) !important;
+  }
+}
+button.planeButton:hover {
+  background-color: #0256b0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  .icon:not(.sent) {
+    transform: translateX(-50%);
+  }
+}

@@ -1,19 +1,20 @@
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   deleteObject,
   getStorage,
-  ref,
-  uploadBytes,
+  ref as refStorage,
   uploadBytesResumable,
 } from "firebase/storage";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Card, ProgressBar } from "react-bootstrap";
-import { FaCheck, FaCheckCircle, FaPlus } from "react-icons/fa";
+import { FaCheck, FaPlus } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { listFiles, pathToImg } from "../../../utils/storage";
-import { ref as refStorage } from "firebase/storage";
-import { getAuth } from "firebase/auth";
 import "./../../UploadProducts/UploadProducts.css";
+import Back from "src/components/utils/Back";
+import Loading from "src/components/utils/Loading";
+import Bytes from "src/components/utils/Bytes";
 const auth = getAuth();
 const storage = getStorage();
 function ImgComp({ img, afterDelete }) {
@@ -67,7 +68,10 @@ function AddImgs({ id, location }) {
   function nextStep() {
     if (location.state)
       if (location.state.continue__)
-        navigate(location.state.continue__, { state: location.state });
+        navigate(location.state.continue__, {
+          state: location.state,
+          continue__: null,
+        });
 
     setPrevImgs([]);
     setUploadEach([]);
@@ -187,17 +191,20 @@ function AddImgs({ id, location }) {
               </div>
             )}
             {uploadEach[ind]?.bytesTransferred != null && (
-              <div className="hstack text-white">
-                {uploadEach[ind].bytesTransferred}
-
-                <ProgressBar
-                  now={
-                    (uploadEach[ind].bytesTransferred /
-                      uploadEach[ind].totalBytes) *
-                    100
-                  }
-                />
-                {uploadEach[ind].totalBytes}
+              <div className="vstack text-white">
+                <div>
+                  <ProgressBar
+                    now={
+                      (uploadEach[ind].bytesTransferred /
+                        uploadEach[ind].totalBytes) *
+                      100
+                    }
+                  />
+                </div>
+                <div className="hstack justify-content-between">
+                  <Bytes value={uploadEach[ind].bytesTransferred}/>
+                  <Bytes value={uploadEach[ind].totalBytes}/>
+                </div>
               </div>
             )}
 
@@ -273,10 +280,27 @@ function EditGalleryImages() {
     }
   }, [id]);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    // Set an authentication state observer and get user data
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
   return (
     <>
-      {auth.currentUser && (
+      {loading && <Loading />}
+      {user && (
         <div className="vstack gap-2">
+          <Back to="../../" />
+
           <div className="hstack gap-4 flex-wrap p-4">
             {images.map((e, i) => (
               <ImgComp

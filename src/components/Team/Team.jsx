@@ -80,9 +80,6 @@ function SimplifyPerson({ person, openStory }) {
 function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
   const age = new Date().getFullYear() - person.dob.y;
   const [view, setView] = useState(false);
-  window.openStory = openStory;
-  window.setIsOpen = setIsOpen;
-  window.person = person;
   function openStory() {
     setIsOpen(true);
   }
@@ -230,7 +227,6 @@ function Person({ person, isOpen, setIsOpen, isOtherOpen }) {
 function Team() {
   const [open, setOpen] = useState(new Array(members.length).fill(false));
   const [the_m, setThe_m] = useState(members);
-  window.open = open;
   function isSthOpen() {
     return open.some((e) => e);
   }

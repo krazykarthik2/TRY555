@@ -1,5 +1,4 @@
-import { child, get, getDatabase, onValue, ref } from "firebase/database";
-import { once } from "firebase/database";
+import { child, get, getDatabase, ref } from "firebase/database";
 import { listFiles } from "./storage";
 import { mapToArray } from "./utilities";
 
@@ -48,5 +47,4 @@ async function getCollage(gallery_id) {
     }
 }
 
-window.c = { collages, getCollage, getCollages };
 export { getCollage, getCollages };
